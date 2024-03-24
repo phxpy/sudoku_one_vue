@@ -1,0 +1,63 @@
+.field {
+    align-self: center;
+    justify-self: center;
+    display: inline-grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 3px;
+    border: 3px solid #333;
+    background-color: #333;
+}
+
+.field__box {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 1px;
+    background-color: #ccc;
+}
+
+/* .field__cell--active:nth-child(n) + .field__cell--active:nth-child(n+1) .field__cell-borders {
+    border-bottom: none;
+    bottom: -9px;
+} */
+
+/* .field__cell--active:has(+ .field__cell--active) .field__cell-borders {
+    border-right: none;
+    right: -9px;
+} */
+
+/* .field__cell--active + .field__cell--active:not(:nth-child(9n + 1)) .field__cell-borders {
+    border-left: none;
+    left: -9px;
+}
+
+.field__cell--active:not(:nth-child(9n)):has(+ .field__cell--active) .field__cell-borders {
+    border-right: none;
+    right: -9px;
+}
+
+.field__cell--active:nth-child(3n):not(:nth-child(9n)) + .field__cell--active .field__cell-borders {
+    border-left: none;
+    left: -12px;
+}
+
+.field__cell--active:nth-child(3n):not(:nth-child(9n)):has(+ .field__cell--active) .field__cell-borders {
+    border-right: none;
+    right: -12px;
+}
+
+@for $i from 1 through 81 {
+    .field__cell--active[data-num="#{$i}"]
+        ~ .field__cell--active[data-num="#{$i + 9}"]
+        .field__cell-borders {
+        border-top: none;
+        top: -9px;
+    }
+
+    .field__cell--active[data-num="#{$i}"]:has(
+            ~ .field__cell--active[data-num="#{$i + 9}"]
+        )
+        .field__cell-borders {
+        border-bottom: none;
+        bottom: -9px;
+    }
+} */
