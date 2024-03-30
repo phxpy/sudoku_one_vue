@@ -1,0 +1,171 @@
+.controls {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px 40px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.timer {
+    grid-column: 1 / -1;
+}
+
+.controls__aside {
+    grid-column: 2;
+    grid-row: 2 / 6;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.controls__item-btn,
+.controls__item-label {
+    position: relative;
+    display: block;
+    width: 80px;
+    height: 80px;
+    padding: 0;
+    font-size: 0;
+    background-color: #eee;
+    border: none;
+    border-radius: 5px;
+}
+
+.controls__item-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.controls__item-label--danger {
+    background-color: #e63232;
+}
+
+.controls__item-label--danger:hover {
+    background-color: #d82e2e;
+}
+
+.controls__item-radio:checked + .controls__item-label {
+    background-color: lightskyblue;
+}
+
+.controls__item-radio:not(:checked) + .controls__item-label:hover {
+    cursor: pointer;
+    background-color: #ddd;
+}
+
+.controls__item-btn:not(.numpad__btn--filled):hover {
+    background-color: #ddd;
+}
+
+.controls__item-btn-label {
+    font-size: 50px;
+}
+
+.controls__item-btn-icon {
+    width: 60px;
+    height: 60px;
+}
+
+.controls__item-btn-icon--arrow {
+    transform: rotate(-45deg);
+}
+
+/* numpad */
+
+.numpad {
+    display: none;
+    grid-column: 1;
+    grid-row: 2;
+    grid-template-columns: repeat(3, $cell-size);
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.numpad--active {
+    display: grid;
+}
+
+.numpad__btn {
+    font-size: 50px;
+    background-color: #ddd;
+    cursor: default;
+}
+
+.numpad__btn--filled {
+    color: #7fc96b;
+}
+
+.numpad__centers .numpad__btn {
+    font-size: 0;
+}
+
+.numpad__btn--wide {
+    width: 100%;
+}
+
+.numpad__btn--success {
+    color: #fff;
+    background-color: #7fc96b;
+}
+
+.numpad__center-marks .numpad__btn,
+.numpad__colors .numpad__btn {
+    font-size: 0;
+}
+
+.numpad__item--delete .numpad__btn {
+    width: 100%;
+    font-size: 50px;
+}
+
+.numpad__btn:not(.numpad__btn--filled):hover {
+    background-color: #bbb;
+    cursor: pointer;
+}
+
+.controls__item-btn.numpad__btn--success:hover {
+    background-color: #6eaf5c;
+}
+
+.numpad__btn--center-mark {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.controls__item-btn-color-label {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 0;
+    line-height: 0;
+}
+
+.controls__item-btn-color-input {
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+}
+
+#deleteBtn {
+    grid-column: 1;
+    grid-row: 3;
+}
+
+#checkSolution {
+    grid-column: 1;
+    grid-row: 4;
+}

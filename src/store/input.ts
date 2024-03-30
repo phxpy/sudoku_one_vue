@@ -1,38 +1,30 @@
 import { defineStore } from 'pinia'
 import { useSelectionStore } from "@/store/selection";
 import type { FieldCell } from "@/store/selection";
+import { COLORS, SYMBOLS } from "@/store/enums";
+
+interface NumberBtn extends HTMLElement {
+    textContent: string
+}
 
 export const useInputStore = defineStore("input", {
-    state() {
+    state(){
         return {
             selection: useSelectionStore(),
-            COLORS: {
-                "!": "E63232",
-                "@": "F3722C",
-                "#": "F8961E",
-                "$": "FFD043",
-                "%": "7FC96B",
-                "^": "43AA8B",
-                "&": "277DA1",
-                "*": "3B498E",
-                "(": "FFFFFF"
-            },
-            SYMBOLS: {
-                "!": "1",
-                "@": "2",
-                "#": "3",
-                "$": "4",
-                "%": "5",
-                "^": "6",
-                "&": "7",
-                "*": "8",
-                "(": "9"
-            },
+            COLORS,
+            SYMBOLS
         }
     },
     actions: {
-        inputNumber(event: any) {
-            const key = event.key || event.target.textContent
+        inputNumber(e: KeyboardEvent | MouseEvent) {
+            let key: string
+
+            if (e instanceof KeyboardEvent) {
+                key = e.key
+            } else {
+                const divBtn = e.target as NumberBtn
+                key = divBtn.textContent
+            }
 
             if (this.selection.selectedCells.length) {
                 this.selection.selectedCells.forEach(cell => {
@@ -52,20 +44,27 @@ export const useInputStore = defineStore("input", {
             }
         },
         // input corner marks
-        inputCorners(event: any) {
-            const key = this.SYMBOLS[event.key] || event.target.closest(".numpad__btn").children[0].textContent
+        inputCorners(e: KeyboardEvent | MouseEvent) {
+            let key: string
+
+            if (e instanceof KeyboardEvent) {
+                key = this.SYMBOLS[e.key]
+            } else {
+                // const divBtn = e.target as NumberBtn
+                // key = divBtn.closest(".numpad__btn").children[0].textContent
+            }
 
             this.selection.selectedCells.forEach(cell => {
                 if (!cell.classList.contains("field__cell--hardwired")) {
 
                     const corners = cell.querySelector(".field__cell-corners")!
 
-                    if (cell.cornerMarks && cell.cornerMarks.length && cell.cornerMarks.includes(key)) {
+                    if (cell.cornerMarks && cell.cornerMarks.length && cell.cornerMarks.includes(+key)) {
                         const mark = Array.from(corners.children).find(item => {
                             return item.classList.contains(`field__cell-corner-mark--${key}`)
                         })
-                        mark.remove()
-                        cell.cornerMarks.splice(cell.cornerMarks.indexOf(key), 1)
+                        mark!.remove()
+                        cell.cornerMarks.splice(cell.cornerMarks.indexOf(+key), 1)
                     } else {
                         if (!cell.cornerMarks) cell.cornerMarks = []
                         if (cell.centerMarks) cell.centerMarks = []
@@ -78,23 +77,29 @@ export const useInputStore = defineStore("input", {
                         span.textContent = key
                         cell.querySelector(".field__cell-number")!.textContent = ""
                         corners.append(span)
-                        cell.cornerMarks.push(key)
+                        cell.cornerMarks.push(+key)
                     }
                 }
             })
         },
-        inputCenters(e: any) {
-            const key = e.key || e.target.closest(".numpad__btn").children[0].textContent
+        inputCenters(e: MouseEvent | KeyboardEvent) {
+            let key: string
+
+            if (e instanceof KeyboardEvent) {
+                key = e.key
+            } else {
+                // key = e.target.closest(".numpad__btn").children[0].textContent
+            }
 
             this.selection.selectedCells.forEach(cell => {
                 if (!cell.classList.contains("field__cell--hardwired")) {
                     const centers: FieldCell = cell.querySelector(".field__cell-centers")!
 
-                    if (cell.centerMarks && cell.centerMarks.includes(key)) {
+                    if (cell.centerMarks && cell.centerMarks.includes(+key)) {
                         const cornersArr: [] = [...centers.textContent]
                         cornersArr.splice(centers.textContent.indexOf(key), 1)
                         centers.textContent = cornersArr.join("")
-                        cell.centerMarks.splice(cell.centerMarks.indexOf(key), 1)
+                        cell.centerMarks.splice(cell.centerMarks.indexOf(+key), 1)
                     } else {
                         if (!cell.centerMarks) cell.centerMarks = []
                         if (cell.cornerMarks) cell.cornerMarks = []
@@ -102,7 +107,7 @@ export const useInputStore = defineStore("input", {
                         cell.querySelector(".field__cell-number")!.textContent = ""
                         cell.querySelector(".field__cell-corners")!.textContent = ""
 
-                        cell.centerMarks.push(key)
+                        cell.centerMarks.push(+key)
                         cell.centerMarks.sort()
 
                         centers.textContent = ""
