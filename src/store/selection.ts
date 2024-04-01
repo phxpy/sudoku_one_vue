@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 
 export interface FieldCell extends HTMLElement {
-    cornerMarks?: number[]
-    centerMarks?: number[]
-    bgColors?: string[]
+    cornerMarks: number[]
+    centerMarks: number[]
+    bgColors: string[]
 }
 
 export const useSelectionStore = defineStore("selection", {
@@ -14,7 +14,7 @@ export const useSelectionStore = defineStore("selection", {
         }
     },
     actions: {
-        addCell(cell: HTMLElement) {
+        addCell(cell: FieldCell) {
             this.selectedCells.push(cell)
         },
         removeCell() {

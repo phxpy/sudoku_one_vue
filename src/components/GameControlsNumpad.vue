@@ -1,28 +1,28 @@
 <template>
     <div class="controls">
         <div class="timer">00:00:00</div>
-        <ul class="numpad numpad__numbers" :class="activeNumpad === 'numbers' ? 'numpad--active' : ''">
+        <ul class="numpad numpad__numbers" :class="globalStore.activeNumpad === 'numbers' ? 'numpad--active' : ''">
             <li class="numpad__item" v-for="n in 9" :key="`numpad-number-${n}`">
-                <button class="controls__item-btn numpad__btn">{{ n }}</button>
+                <button class="controls__item-btn numpad__btn" @click="inputValue($event)">{{ n }}</button>
             </li>
         </ul>
-        <ul class="numpad numpad__corners" :class="activeNumpad === 'corners' ? 'numpad--active' : ''">
+        <ul class="numpad numpad__corners" :class="globalStore.activeNumpad === 'corners' ? 'numpad--active' : ''">
             <li class="numpad__item" v-for="n in 9" :key="`numpad-corner-${n}`">
-                <button class="controls__item-btn numpad__btn">
+                <button class="controls__item-btn numpad__btn" @click="inputValue($event)">
                     <span class="numpad__btn--corner" :class="`numpad__btn--corner-${n}`">{{ n }}</span>
                 </button>
             </li>
         </ul>
-        <ul class="numpad numpad__centers" :class="activeNumpad === 'centers' ? 'numpad--active' : ''">
+        <ul class="numpad numpad__centers" :class="globalStore.activeNumpad === 'centers' ? 'numpad--active' : ''">
             <li class="numpad__item" v-for="n in 9" :key="`numpad-center-${n}`">
-                <button class="controls__item-btn numpad__btn">
+                <button class="controls__item-btn numpad__btn" @click="inputValue($event)">
                     <span class="numpad__btn--center-mark">{{ n }}</span>
                 </button>
             </li>
         </ul>
-        <ul class="numpad numpad__colors" :class="activeNumpad === 'colors' ? 'numpad--active' : ''">
+        <ul class="numpad numpad__colors" :class="globalStore.activeNumpad === 'colors' ? 'numpad--active' : ''">
             <li class="numpad__item" v-for="(value, key) in colors" :key="`numpad-color-${key}-${value}`">
-                <button class="controls__item-btn numpad__btn">
+                <button class="controls__item-btn numpad__btn" @click="inputValue($event)">
                     <label class="controls__item-btn-color-label">{{ key }}
                         <input class="controls__item-btn-color-input" type="color" disabled :value="value">
                     </label>
@@ -32,14 +32,14 @@
         <ul class="controls__aside">
             <li class="controls__item">
                 <input class="controls__item-radio visuallyhidden" id="controls-numbers" data-class="numpad__numbers"
-                       type="radio" name="controls" value="numbers" v-model="activeNumpad" checked>
+                       type="radio" name="controls" value="numbers" v-model="globalStore.activeNumpad" checked>
                 <label class="controls__item-label" for="controls-numbers">numbers<span
                     class="controls__item-btn-label">#</span>
                 </label>
             </li>
             <li class="controls__item">
                 <input class="controls__item-radio visuallyhidden" id="controls-corners" data-class="numpad__corners"
-                       type="radio" name="controls" value="corners" v-model="activeNumpad">
+                       type="radio" name="controls" value="corners" v-model="globalStore.activeNumpad">
                 <label class="controls__item-label" for="controls-corners">corner marks<span
                     class="field__cell-corner-mark field__cell-corner-mark--1">1</span><span
                     class="field__cell-corner-mark field__cell-corner-mark--2">2</span><span
@@ -48,7 +48,7 @@
             </li>
             <li class="controls__item">
                 <input class="controls__item-radio visuallyhidden" id="controls-centers" data-class="numpad__centers"
-                       type="radio" name="controls" value="centers" v-model="activeNumpad">
+                       type="radio" name="controls" value="centers" v-model="globalStore.activeNumpad">
                 <label class="controls__item-label" for="controls-centers">center marks<span
                     class="field__cell-center-mark">1</span><span class="field__cell-center-mark">2</span><span
                     class="field__cell-center-mark">4</span>
@@ -56,7 +56,7 @@
             </li>
             <li class="controls__item">
                 <input class="controls__item-radio visuallyhidden" id="controls-colors" data-class="numpad__colors"
-                       type="radio" name="controls" value="colors" v-model="activeNumpad">
+                       type="radio" name="controls" value="colors" v-model="globalStore.activeNumpad">
                 <label class="controls__item-label" for="controls-colors">colors
                     <svg class="controls__item-btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none"
                          viewBox="0 0 513 478">
@@ -86,7 +86,11 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import { useGlobalStore } from "@/store/global";
+import { useInputStore } from "@/store/input";
+
+const globalStore = useGlobalStore()
+const inputStore = useInputStore()
 
 const colors = {
     'red': '#ff7777',
@@ -100,7 +104,9 @@ const colors = {
     'white': '#ffffff'
 }
 
-const activeNumpad = ref("numbers")
+function inputValue(event: MouseEvent): void {
+    inputStore.inputNumpadValue(event)
+}
 </script>
 
 <style scoped lang="scss">

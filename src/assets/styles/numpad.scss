@@ -3,6 +3,7 @@
     grid-template-columns: auto auto;
     gap: 10px 40px;
     padding: 10px;
+    font-weight: 500;
     border-radius: 10px;
 }
 
@@ -64,6 +65,7 @@
 
 .controls__item-btn-label {
     font-size: 50px;
+    font-weight: inherit;
 }
 
 .controls__item-btn-icon {
@@ -94,6 +96,7 @@
 
 .numpad__btn {
     font-size: 50px;
+    font-weight: inherit;
     background-color: #ddd;
     cursor: default;
 }
@@ -123,6 +126,7 @@
 .numpad__item--delete .numpad__btn {
     width: 100%;
     font-size: 50px;
+    font-weight: inherit;
 }
 
 .numpad__btn:not(.numpad__btn--filled):hover {
@@ -141,6 +145,7 @@
     width: 100%;
     height: 100%;
     font-size: 20px;
+    font-weight: inherit;
     line-height: 1;
 }
 

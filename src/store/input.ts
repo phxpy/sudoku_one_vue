@@ -1,9 +1,16 @@
 import { defineStore } from 'pinia'
+import { useGlobalStore } from "@/store/global";
 import { useSelectionStore } from "@/store/selection";
 import type { FieldCell } from "@/store/selection";
-import { COLORS, SYMBOLS } from "@/store/enums";
+import { COLORS } from "@/store/enums";
 
-interface NumberBtn extends HTMLElement {
+interface NumpadBtn extends HTMLElement {
+    closest(cls: string): HTMLElement,
+    firstElementChild: HTMLElement,
+    textContent: string,
+}
+
+interface NumpadTextNode extends HTMLElement {
     textContent: string
 }
 
@@ -11,18 +18,33 @@ export const useInputStore = defineStore("input", {
     state(){
         return {
             selection: useSelectionStore(),
-            COLORS,
-            SYMBOLS
+            COLORS
         }
     },
     actions: {
+        inputNumpadValue($event: MouseEvent) {
+            switch (useGlobalStore().activeNumpad) {
+                case "numbers":
+                    this.inputNumber($event)
+                    break
+                case "corners":
+                    this.inputCorners($event)
+                    break
+                case "centers":
+                    this.inputCenters($event)
+                    break
+                case "colors":
+                    this.colorCells($event)
+                    break
+            }
+        },
         inputNumber(e: KeyboardEvent | MouseEvent) {
             let key: string
 
             if (e instanceof KeyboardEvent) {
                 key = e.key
             } else {
-                const divBtn = e.target as NumberBtn
+                const divBtn = e.target as NumpadBtn
                 key = divBtn.textContent
             }
 
@@ -48,10 +70,11 @@ export const useInputStore = defineStore("input", {
             let key: string
 
             if (e instanceof KeyboardEvent) {
-                key = this.SYMBOLS[e.key]
+                key = e.code.split("")[e.code.length - 1]
             } else {
-                // const divBtn = e.target as NumberBtn
-                // key = divBtn.closest(".numpad__btn").children[0].textContent
+                const numBtn = e.target as NumpadBtn
+                const numTextNode = numBtn.closest(".numpad__btn").firstElementChild as NumpadTextNode
+                key = numTextNode.textContent
             }
 
             this.selection.selectedCells.forEach(cell => {
@@ -86,9 +109,11 @@ export const useInputStore = defineStore("input", {
             let key: string
 
             if (e instanceof KeyboardEvent) {
-                key = e.key
+                key = e.code.split("")[e.code.length - 1]
             } else {
-                // key = e.target.closest(".numpad__btn").children[0].textContent
+                const numBtn = e.target as NumpadBtn
+                const numTextNode = numBtn.closest(".numpad__btn").firstElementChild as NumpadTextNode
+                key = numTextNode.textContent
             }
 
             this.selection.selectedCells.forEach(cell => {
@@ -96,7 +121,7 @@ export const useInputStore = defineStore("input", {
                     const centers: FieldCell = cell.querySelector(".field__cell-centers")!
 
                     if (cell.centerMarks && cell.centerMarks.includes(+key)) {
-                        const cornersArr: [] = [...centers.textContent]
+                        const cornersArr: number[] = [...centers.textContent]
                         cornersArr.splice(centers.textContent.indexOf(key), 1)
                         centers.textContent = cornersArr.join("")
                         cell.centerMarks.splice(cell.centerMarks.indexOf(+key), 1)
@@ -115,6 +140,47 @@ export const useInputStore = defineStore("input", {
                             centers.textContent += cell.centerMarks[i]
                         }
                     }
+                }
+            })
+        },
+        colorCells(e: MouseEvent | KeyboardEvent) {
+            let color: string
+
+            if (e instanceof KeyboardEvent) {
+                const key = +e.code.split("")[e.code.length - 1]
+                color = this.COLORS[key]
+            } else {
+                const numBtn = e.target as NumpadBtn
+                const numColor = numBtn.closest(".numpad__btn").firstElementChild!.firstElementChild as HTMLInputElement
+                color = numColor.value
+            }
+
+            this.selection.selectedCells.forEach((cell: FieldCell): void => {
+                if (cell.bgColors.indexOf(color) === -1) {
+                    cell.bgColors.push(color)
+                } else {
+                    cell.bgColors.splice(cell.bgColors.indexOf(color), 1)
+                }
+                if (cell.bgColors.length > 1) {
+                    cell.bgColors.sort()
+                    const percent:number = +(100 / cell.bgColors.length).toFixed(2)
+                    let colorStr = `${cell.bgColors[0]} ${percent}%`
+                    for (let i = 1; i < cell.bgColors.length; i++) {
+                        if (i !== cell.bgColors.length - 1) {
+                            colorStr += `, ${cell.bgColors[i]} ${percent}%, ${cell.bgColors[i]} ${percent * (i + 1)}%`
+                        } else {
+                            colorStr += `, ${cell.bgColors[i]} ${percent * i}%`
+                        }
+                    }
+                    cell.style.backgroundColor = "#fff"
+                    cell.style.backgroundImage = `conic-gradient(from 30deg, ${colorStr})`
+                } else if (cell.bgColors.length === 1 && cell.style.backgroundImage.startsWith("conic")) {
+                    cell.style.backgroundImage = "none"
+                    cell.style.backgroundColor = `${cell.bgColors[0]}`
+                    cell.bgColors = []
+                } else {
+                    cell.style.backgroundImage = "none"
+                    cell.style.backgroundColor = `${color}`
                 }
             })
         },
@@ -145,37 +211,5 @@ export const useInputStore = defineStore("input", {
                 }
             })
         },
-        colorCells(e: any) {
-            const color = this.COLORS[e.key] ? `#${this.COLORS[e.key]}` : e.target.closest(".numpad__btn").children[0].children[0].value
-
-            this.selection.selectedCells.forEach(cell => {
-                if (cell.bgColors.indexOf(color) === -1) {
-                    cell.bgColors.push(color)
-                } else {
-                    cell.bgColors.splice(cell.bgColors.indexOf(color), 1)
-                }
-                if (cell.bgColors.length > 1) {
-                    cell.bgColors.sort()
-                    const percent:number = +(100 / cell.bgColors.length).toFixed(2)
-                    let colorStr = `${cell.bgColors[0]} ${percent}%`
-                    for (let i = 1; i < cell.bgColors.length; i++) {
-                        if (i !== cell.bgColors.length - 1) {
-                            colorStr += `, ${cell.bgColors[i]} ${percent}%, ${cell.bgColors[i]} ${percent * (i + 1)}%`
-                        } else {
-                            colorStr += `, ${cell.bgColors[i]} ${percent * i}%`
-                        }
-                    }
-                    cell.style.backgroundColor = "#fff"
-                    cell.style.backgroundImage = `conic-gradient(from 30deg, ${colorStr})`
-                } else if (cell.bgColors.length === 1 && cell.style.backgroundImage.startsWith("conic")) {
-                    cell.style.backgroundImage = "none"
-                    cell.style.backgroundColor = `${cell.bgColors[0]}`
-                    cell.bgColors = []
-                } else {
-                    cell.style.backgroundImage = "none"
-                    cell.style.backgroundColor = `${color}`
-                }
-            })
-        }
     }
 })
