@@ -1,5 +1,5 @@
 <template>
-    <div class="field" @mousedown="store.selectCell">
+    <div class="field" @mousedown="selectionStore.selectCell">
         <ul class="field__box" v-for="n in 9" :key="`box-${n}`">
             <GameFieldCell
                 v-for="(cellNumber, index) in sudokuBoxEmpty.slice((n-1)*9, (n-1)*9+9)" :key="`${index}-${cellNumber}`"
@@ -17,10 +17,10 @@
     import GameFieldCell from "./GameFieldCell.vue"
     import { useSelectionStore } from "@/store/selection"
 
-    const store = useSelectionStore()
+    const selectionStore = useSelectionStore()
 
     onMounted(() => {
-        store.initializeCells()
+        selectionStore.initializeCells()
     })
 
     const sudokuBoxEmpty = "530600098070195000000000060800400700060803020003001006060000000000419080280005079"

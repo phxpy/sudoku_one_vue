@@ -11,6 +11,7 @@ export const useSelectionStore = defineStore("selection", {
         return {
             selectedCells: [] as FieldCell[],
             isDeselectionMode: false as boolean,
+            allCells: [] as FieldCell[]
         }
     },
     actions: {
@@ -81,13 +82,15 @@ export const useSelectionStore = defineStore("selection", {
             }
         },
         initializeCells() {
-            const cells: FieldCell[] = Array.from(document.querySelectorAll(".field__cell"))
+            const cells = Array.from(document.querySelectorAll(".field__cell")) as FieldCell[]
 
             for (let i = 0; i < cells.length; i++) {
                 cells[i].cornerMarks = []
                 cells[i].centerMarks = []
                 cells[i].bgColors = []
             }
+
+            this.allCells = cells
         }
     }
 })

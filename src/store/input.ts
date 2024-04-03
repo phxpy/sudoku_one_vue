@@ -65,7 +65,6 @@ export const useInputStore = defineStore("input", {
                 })
             }
         },
-        // input corner marks
         inputCorners(e: KeyboardEvent | MouseEvent) {
             let key: string
 
@@ -118,7 +117,7 @@ export const useInputStore = defineStore("input", {
 
             this.selection.selectedCells.forEach(cell => {
                 if (!cell.classList.contains("field__cell--hardwired")) {
-                    const centers: FieldCell = cell.querySelector(".field__cell-centers")!
+                    const centers = cell.querySelector(".field__cell-centers")!
 
                     if (cell.centerMarks && cell.centerMarks.includes(+key)) {
                         const cornersArr: number[] = [...centers.textContent]
@@ -184,8 +183,16 @@ export const useInputStore = defineStore("input", {
                 }
             })
         },
-        deleteCell(): void {
-            this.selection.selectedCells.forEach(cell => {
+        deleteCell(refresh: boolean = false): void {
+            let cells = [] as FieldCell[]
+
+            if (refresh) {
+                cells = this.selection.allCells
+            } else {
+                cells = this.selection.selectedCells
+            }
+
+            cells.forEach(cell => {
                 if (!cell.classList.contains("field__cell--hardwired")) {
                     if (cell.querySelector(".field__cell-number")!.textContent) {
                         cell.querySelector(".field__cell-number")!.textContent = ""
@@ -211,5 +218,8 @@ export const useInputStore = defineStore("input", {
                 }
             })
         },
+        refresh(): void {
+            this.deleteCell(true)
+        }
     }
 })
