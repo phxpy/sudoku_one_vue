@@ -25,7 +25,6 @@
     let centersArr = ref<number[]>([])
     let cornersArr = ref<number[]>([])
     let cellColors = ref<string[]>([])
-    let cellColorProp = ref<string>("")
 
     const cellCenters = computed(() => {
         return [...centersArr.value].sort().join("")
@@ -50,8 +49,32 @@
         return htmlString
     })
 
+    const cellColorProp = computed(() => {
+        let gradientString = ""
+
+        if (cellColors.value.length === 0) {
+            return ""
+        } else if (cellColors.value.length === 1) {
+            return `background-color: ${cellColors.value[0]};`
+        } else {
+            const percent = parseInt((100 / cellColors.value.length).toFixed(0))
+            const gap = 1
+
+            Array.from(cellColors.value).sort().forEach((colorItem, index) => {
+                if (index === 0) {
+                    gradientString += `${colorItem} calc(${percent}% - ${gap}px)`
+                } else if (index === cellColors.value.length - 1) {
+                    gradientString += `, ${colorItem} calc(${percent * index}% + ${gap}px)`
+                } else {
+                    gradientString += `, ${colorItem} calc(${percent * index}% + ${gap}px), ${colorItem} calc(${percent * (index + 1)}% - ${gap}px)`
+                }
+            })
+            return `background-image: linear-gradient(120deg, ${gradientString});`
+        }
+    })
+
     function clearCell(
-        except: "number" | "centers" | "corners" | "colors"
+        except: "number" | "centers" | "corners" | "colors" | null
     ): void {
         if (except === "number") {
             cornersArr.value = []
@@ -62,6 +85,11 @@
         } else if (except === "corners") {
             cellNumber.value = ""
             centersArr.value = []
+        } else {
+            cellNumber.value = ""
+            centersArr.value = []
+            cornersArr.value = []
+            cellColors.value = []
         }
     }
 
@@ -123,30 +151,36 @@
                 } else {
                     cellColors.value.push(color)
                 }
+            }
+        })
 
-                if (cellColors.value.length === 0) {
-                    cellColorProp.value = ""
-                } else if (cellColors.value.length === 1) {
-                    cellColorProp.value = `background-color: ${cellColors.value[0]};`
-                } else {
-                    const percent = parseInt((100 / cellColors.value.length).toFixed(0))
-                    let gradientString = ""
-                    const gap = 1
+        emitter.on("delete-cell", () => {
+            if (
+                !cell.value!.classList.contains("field__cell--hardwired") &&
+                (
+                    cell.value!.classList.contains("field__cell--active") ||
+                    cell.value!.classList.contains("field__cell--one-active")
+                )
+            ) {
+                clearCell(null)
+            } else if (
+                cell.value!.classList.contains("field__cell--hardwired") &&
+                (
+                    cell.value!.classList.contains("field__cell--active") ||
+                    cell.value!.classList.contains("field__cell--one-active")
+                )
+            ) {
+                cellColors.value = []
+            }
+        })
 
-                    cellColors.value.sort().forEach((colorItem, index) => {
-                        if (index === 0) {
-                            gradientString += `${colorItem} calc(${percent}% - ${gap}px)`
-                        } else if (index === cellColors.value.length - 1) {
-                            gradientString += `, ${colorItem} calc(${percent * index}% + ${gap}px)`
-                        } else {
-                            gradientString += `, ${colorItem} calc(${percent * index}% + ${gap}px), ${colorItem} calc(${percent * (index + 1)}% - ${gap}px)`
-                        }
-                    })
-
-                    cellColorProp.value = `background-image: linear-gradient(120deg, ${gradientString});`
-                }
-
-
+        emitter.on('refresh', () => {
+            if (
+                !cell.value!.classList.contains("field__cell--hardwired")
+            ) {
+                clearCell(null)
+            } else {
+                cellColors.value = []
             }
         })
     })

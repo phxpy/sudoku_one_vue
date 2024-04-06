@@ -5,12 +5,10 @@
 <script setup lang="ts">
     import { useGlobalStore } from "@/store/global";
     import { useSelectionStore } from '@/store/selection';
-    import { useInputStore } from "@/store/input";
     import { onMounted } from 'vue';
     import emitter from '@/eventbus';
 
     const selectionStore = useSelectionStore()
-    const inputStore = useInputStore()
     const globalStore = useGlobalStore()
 
     onMounted(() => {
@@ -49,7 +47,7 @@
             }
 
             if ((event.key === "Delete" || event.key === "Backspace") && selectionStore.selectedCells.length) {
-                inputStore.deleteCell()
+                emitter.emit("delete-cell")
             }
         })
 

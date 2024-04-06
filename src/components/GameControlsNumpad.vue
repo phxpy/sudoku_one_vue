@@ -70,7 +70,7 @@
                 </label>
             </li>
             <li class="controls__item">
-                <button class="controls__item-label controls__item-label--danger" id="refreshBtn" @click="inputStore.refresh">refresh
+                <button class="controls__item-label controls__item-label--danger" id="refreshBtn" @click="emitter.emit('refresh')">refresh
                     <svg class="controls__item-btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                          fill="#fff">
                         <path
@@ -79,7 +79,7 @@
                 </button>
             </li>
         </ul>
-        <button class="controls__item-btn numpad__btn numpad__btn--wide" id="deleteBtn" @click="inputStore.deleteCell">delete</button>
+        <button class="controls__item-btn numpad__btn numpad__btn--wide" id="deleteBtn" @click="emitter.emit('delete-cell')">delete</button>
         <button class="controls__item-btn numpad__btn numpad__btn--wide numpad__btn--success" id="checkSolution">check
         </button>
     </div>
@@ -87,12 +87,10 @@
 
 <script setup lang="ts">
 import { useGlobalStore } from "@/store/global";
-import { useInputStore } from "@/store/input";
 import { COLORS } from "@/store/constants";
 import emitter from "@/eventbus";
 
 const globalStore = useGlobalStore()
-const inputStore = useInputStore()
 </script>
 
 <style scoped lang="scss">
