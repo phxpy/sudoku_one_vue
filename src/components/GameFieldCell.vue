@@ -1,21 +1,107 @@
 <template>
-    <li class="field__cell" :class="{'field__cell--hardwired': hardwired}" :data-num="cellIndex">
-        <div class="field__cell-inner field__cell-number">
-            <slot></slot>
-        </div>
+    <li class="field__cell" :class="{'field__cell--hardwired': hardwired}" ref="cell">
+        <div class="field__cell-inner field__cell-number">{{ cellNumber }}</div>
         <div class="field__cell-inner field__cell-borders"></div>
-        <div class="field__cell-inner field__cell-corners"></div>
-        <div class="field__cell-inner field__cell-centers"></div>
+        <div class="field__cell-inner field__cell-corners" v-html="cellCorners"></div>
+        <div class="field__cell-inner field__cell-centers">{{ cellCenters }}</div>
         <div class="field__cell-hovercell"></div>
         <div class="field__cell-selection"></div>
     </li>
 </template>
 
 <script setup lang="ts">
-    defineProps<{
+    import { onMounted, ref, computed } from 'vue';
+    import emitter from '@/eventbus';
+
+    const props = defineProps<{
         hardwired: Boolean,
-        cellIndex: Number
+        cellIndex: Number,
+        cellValue: String | Number
     }>()
+
+    const cell = ref<HTMLLIElement | null>(null)
+
+    let cellNumber = ref(props.cellValue)
+    let centersArr = ref<number[]>([])
+    let cornersArr = ref<number[]>([])
+
+    const cellCenters = computed(() => {
+        return [...centersArr.value].sort().join("")
+    })
+
+    const cellCorners = computed(() => {
+        let htmlString = ""
+
+        if (cornersArr.value.length) {
+
+            [...cornersArr.value].sort().forEach(item => {
+                htmlString += `
+                    <span
+                        class="field__cell-corner-mark field__cell-corner-mark--${item}"
+                    >
+                        ${item}
+                    </span>
+                `
+            });
+        }
+
+        return htmlString
+    })
+
+    function clearCell(
+        except: "number" | "centers" | "corners" | "colors"
+    ): void {
+        if (except === "number") {
+            cornersArr.value = []
+            centersArr.value = []
+        } else if (except === "centers") {
+            cellNumber.value = ""
+            cornersArr.value = []
+        } else if (except === "corners") {
+            cellNumber.value = ""
+            centersArr.value = []
+        }
+    }
+
+    onMounted(() => {
+        emitter.on("input-number", (key: number) => {
+            if (
+                cell.value!.classList.contains("field__cell--active") ||
+                cell.value!.classList.contains("field__cell--one-active")
+            ) {
+                clearCell("number")
+                cellNumber.value = key
+            }
+        })
+
+        emitter.on("input-corners", (key: number) => {
+            if (
+                cell.value!.classList.contains("field__cell--active") ||
+                cell.value!.classList.contains("field__cell--one-active")
+            ) {
+                clearCell("corners")
+                if (cornersArr.value.includes(key)) {
+                    cornersArr.value.splice(cornersArr.value.indexOf(key), 1)
+                } else {
+                    cornersArr.value.push(key)
+                }
+            }
+        })
+
+        emitter.on("input-centers", (key: number) => {
+            if (
+                cell.value!.classList.contains("field__cell--active") ||
+                cell.value!.classList.contains("field__cell--one-active")
+            ) {
+                clearCell("centers")
+                if (centersArr.value.includes(key)) {
+                    centersArr.value.splice(centersArr.value.indexOf(key), 1)
+                } else {
+                    centersArr.value.push(key)
+                }
+            }
+        })
+    })
 </script>
 
 <style lang="scss">

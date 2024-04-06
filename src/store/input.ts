@@ -10,10 +10,6 @@ interface NumpadBtn extends HTMLElement {
     textContent: string,
 }
 
-interface NumpadTextNode extends HTMLElement {
-    textContent: string
-}
-
 export const useInputStore = defineStore("input", {
     state(){
         return {
@@ -22,126 +18,6 @@ export const useInputStore = defineStore("input", {
         }
     },
     actions: {
-        inputNumpadValue($event: MouseEvent) {
-            switch (useGlobalStore().activeNumpad) {
-                case "numbers":
-                    this.inputNumber($event)
-                    break
-                case "corners":
-                    this.inputCorners($event)
-                    break
-                case "centers":
-                    this.inputCenters($event)
-                    break
-                case "colors":
-                    this.colorCells($event)
-                    break
-            }
-        },
-        inputNumber(e: KeyboardEvent | MouseEvent) {
-            let key: string
-
-            if (e instanceof KeyboardEvent) {
-                key = e.key
-            } else {
-                const divBtn = e.target as NumpadBtn
-                key = divBtn.textContent
-            }
-
-            if (this.selection.selectedCells.length) {
-                this.selection.selectedCells.forEach(cell => {
-                    if (!cell.classList.contains("field__cell--hardwired")) {
-                        cell.querySelector(".field__cell-corners")!.textContent = ""
-                        cell.querySelector(".field__cell-centers")!.textContent = ""
-                        cell.querySelector(".field__cell-number")!.textContent = key
-
-                        if (cell.cornerMarks) {
-                            cell.cornerMarks = []
-                        }
-                        if (cell.centerMarks) {
-                            cell.centerMarks = []
-                        }
-                    }
-                })
-            }
-        },
-        inputCorners(e: KeyboardEvent | MouseEvent) {
-            let key: string
-
-            if (e instanceof KeyboardEvent) {
-                key = e.code.split("")[e.code.length - 1]
-            } else {
-                const numBtn = e.target as NumpadBtn
-                const numTextNode = numBtn.closest(".numpad__btn").firstElementChild as NumpadTextNode
-                key = numTextNode.textContent
-            }
-
-            this.selection.selectedCells.forEach(cell => {
-                if (!cell.classList.contains("field__cell--hardwired")) {
-
-                    const corners = cell.querySelector(".field__cell-corners")!
-
-                    if (cell.cornerMarks && cell.cornerMarks.length && cell.cornerMarks.includes(+key)) {
-                        const mark = Array.from(corners.children).find(item => {
-                            return item.classList.contains(`field__cell-corner-mark--${key}`)
-                        })
-                        mark!.remove()
-                        cell.cornerMarks.splice(cell.cornerMarks.indexOf(+key), 1)
-                    } else {
-                        if (!cell.cornerMarks) cell.cornerMarks = []
-                        if (cell.centerMarks) cell.centerMarks = []
-
-                        cell.querySelector(".field__cell-number")!.textContent = ""
-                        cell.querySelector(".field__cell-centers")!.textContent = ""
-
-                        const span = document.createElement("span")
-                        span.classList.add("field__cell-corner-mark", `field__cell-corner-mark--${key}`)
-                        span.textContent = key
-                        cell.querySelector(".field__cell-number")!.textContent = ""
-                        corners.append(span)
-                        cell.cornerMarks.push(+key)
-                    }
-                }
-            })
-        },
-        inputCenters(e: MouseEvent | KeyboardEvent) {
-            let key: string
-
-            if (e instanceof KeyboardEvent) {
-                key = e.code.split("")[e.code.length - 1]
-            } else {
-                const numBtn = e.target as NumpadBtn
-                const numTextNode = numBtn.closest(".numpad__btn").firstElementChild as NumpadTextNode
-                key = numTextNode.textContent
-            }
-
-            this.selection.selectedCells.forEach(cell => {
-                if (!cell.classList.contains("field__cell--hardwired")) {
-                    const centers = cell.querySelector(".field__cell-centers")!
-
-                    if (cell.centerMarks && cell.centerMarks.includes(+key)) {
-                        const cornersArr: number[] = [...centers.textContent]
-                        cornersArr.splice(centers.textContent.indexOf(key), 1)
-                        centers.textContent = cornersArr.join("")
-                        cell.centerMarks.splice(cell.centerMarks.indexOf(+key), 1)
-                    } else {
-                        if (!cell.centerMarks) cell.centerMarks = []
-                        if (cell.cornerMarks) cell.cornerMarks = []
-
-                        cell.querySelector(".field__cell-number")!.textContent = ""
-                        cell.querySelector(".field__cell-corners")!.textContent = ""
-
-                        cell.centerMarks.push(+key)
-                        cell.centerMarks.sort()
-
-                        centers.textContent = ""
-                        for (let i = 0; i < cell.centerMarks.length; i++) {
-                            centers.textContent += cell.centerMarks[i]
-                        }
-                    }
-                }
-            })
-        },
         colorCells(e: MouseEvent | KeyboardEvent) {
             let color: string
 

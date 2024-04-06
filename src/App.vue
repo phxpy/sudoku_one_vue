@@ -7,6 +7,7 @@
     import { useSelectionStore } from '@/store/selection';
     import { useInputStore } from "@/store/input";
     import { onMounted } from 'vue';
+    import emitter from '@/eventbus';
 
     const selectionStore = useSelectionStore()
     const inputStore = useInputStore()
@@ -19,7 +20,7 @@
 
             if (!event.shiftKey && !event.ctrlKey && !event.altKey) {
                 if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
-                    inputStore.inputNumber(event)
+                    emitter.emit("input-number", key)
                 }
             }
 
@@ -27,7 +28,7 @@
                 globalStore.setActiveNumpad("corners")
 
                 if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
-                    inputStore.inputCorners(event)
+                    emitter.emit("input-corners", key)
                 }
             }
 
@@ -35,7 +36,7 @@
                 globalStore.setActiveNumpad("centers")
 
                 if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
-                    inputStore.inputCenters(event)
+                    emitter.emit("input-centers", key)
                 }
             }
 

@@ -2,11 +2,11 @@
     <div class="field" @mousedown="selectionStore.selectCell">
         <ul class="field__box" v-for="n in 9" :key="`box-${n}`">
             <GameFieldCell
-                v-for="(cellNumber, index) in sudokuBoxEmpty.slice((n-1)*9, (n-1)*9+9)" :key="`${index}-${cellNumber}`"
+                v-for="(cellNumber, index) in sudokuBoxEmpty.slice((n-1)*9, (n-1)*9+9)" :key="`${index}-${n}`"
                 :hardwired="+cellNumber > 0"
                 :cellIndex="index + (n-1)*9 + 1"
+                :cellValue="+cellNumber > 0 ? cellNumber : ''"
             >
-                {{ +cellNumber > 0 ? cellNumber : "" }}
             </GameFieldCell>
         </ul>
     </div>
