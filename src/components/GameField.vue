@@ -13,15 +13,10 @@
 </template>
 
 <script setup lang="ts">
-    import { onMounted } from "vue";
     import GameFieldCell from "./GameFieldCell.vue"
     import { useSelectionStore } from "@/store/selection"
 
     const selectionStore = useSelectionStore()
-
-    onMounted(() => {
-        selectionStore.initializeCells()
-    })
 
     const sudokuBoxEmpty = "530600098070195000000000060800400700060803020003001006060000000000419080280005079"
     // const sudokuSetEmpty = "405080100209070800701090500806070900105080700307010600509040700306050400804030200"

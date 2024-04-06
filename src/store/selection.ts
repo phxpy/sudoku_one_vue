@@ -80,17 +80,6 @@ export const useSelectionStore = defineStore("selection", {
                     cell.classList.remove("field__cell--active")
                     this.removeCell()
             }
-        },
-        initializeCells() {
-            const cells = Array.from(document.querySelectorAll(".field__cell")) as FieldCell[]
-
-            for (let i = 0; i < cells.length; i++) {
-                cells[i].cornerMarks = []
-                cells[i].centerMarks = []
-                cells[i].bgColors = []
-            }
-
-            this.allCells = cells
         }
     }
 })

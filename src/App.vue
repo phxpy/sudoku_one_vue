@@ -43,8 +43,8 @@
             if (event.ctrlKey && event.shiftKey && !event.altKey) {
                 globalStore.setActiveNumpad("colors")
 
-                if (Object.keys(inputStore.COLORS).includes(key) && selectionStore.selectedCells.length) {
-                    inputStore.colorCells(event)
+                if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
+                    emitter.emit("input-colors", key)
                 }
             }
 

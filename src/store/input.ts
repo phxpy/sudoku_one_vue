@@ -1,64 +1,14 @@
 import { defineStore } from 'pinia'
-import { useGlobalStore } from "@/store/global";
 import { useSelectionStore } from "@/store/selection";
 import type { FieldCell } from "@/store/selection";
-import { COLORS } from "@/store/enums";
-
-interface NumpadBtn extends HTMLElement {
-    closest(cls: string): HTMLElement,
-    firstElementChild: HTMLElement,
-    textContent: string,
-}
 
 export const useInputStore = defineStore("input", {
     state(){
         return {
-            selection: useSelectionStore(),
-            COLORS
+            selection: useSelectionStore()
         }
     },
     actions: {
-        colorCells(e: MouseEvent | KeyboardEvent) {
-            let color: string
-
-            if (e instanceof KeyboardEvent) {
-                const key = +e.code.split("")[e.code.length - 1]
-                color = this.COLORS[key]
-            } else {
-                const numBtn = e.target as NumpadBtn
-                const numColor = numBtn.closest(".numpad__btn").firstElementChild!.firstElementChild as HTMLInputElement
-                color = numColor.value
-            }
-
-            this.selection.selectedCells.forEach((cell: FieldCell): void => {
-                if (cell.bgColors.indexOf(color) === -1) {
-                    cell.bgColors.push(color)
-                } else {
-                    cell.bgColors.splice(cell.bgColors.indexOf(color), 1)
-                }
-                if (cell.bgColors.length > 1) {
-                    cell.bgColors.sort()
-                    const percent:number = +(100 / cell.bgColors.length).toFixed(2)
-                    let colorStr = `${cell.bgColors[0]} ${percent}%`
-                    for (let i = 1; i < cell.bgColors.length; i++) {
-                        if (i !== cell.bgColors.length - 1) {
-                            colorStr += `, ${cell.bgColors[i]} ${percent}%, ${cell.bgColors[i]} ${percent * (i + 1)}%`
-                        } else {
-                            colorStr += `, ${cell.bgColors[i]} ${percent * i}%`
-                        }
-                    }
-                    cell.style.backgroundColor = "#fff"
-                    cell.style.backgroundImage = `conic-gradient(from 30deg, ${colorStr})`
-                } else if (cell.bgColors.length === 1 && cell.style.backgroundImage.startsWith("conic")) {
-                    cell.style.backgroundImage = "none"
-                    cell.style.backgroundColor = `${cell.bgColors[0]}`
-                    cell.bgColors = []
-                } else {
-                    cell.style.backgroundImage = "none"
-                    cell.style.backgroundColor = `${color}`
-                }
-            })
-        },
         deleteCell(refresh: boolean = false): void {
             let cells = [] as FieldCell[]
 

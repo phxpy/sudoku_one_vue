@@ -3,28 +3,28 @@
         <div class="timer">00:00:00</div>
         <ul class="numpad numpad__numbers" :class="globalStore.activeNumpad === 'numbers' ? 'numpad--active' : ''">
             <li class="numpad__item" v-for="n in 9" :key="`numpad-number-${n}`">
-                <button class="controls__item-btn numpad__btn" @click="inputValue($event)">{{ n }}</button>
+                <button class="controls__item-btn numpad__btn" @click="emitter.emit('input-number', n)">{{ n }}</button>
             </li>
         </ul>
         <ul class="numpad numpad__corners" :class="globalStore.activeNumpad === 'corners' ? 'numpad--active' : ''">
             <li class="numpad__item" v-for="n in 9" :key="`numpad-corner-${n}`">
-                <button class="controls__item-btn numpad__btn" @click="inputValue($event)">
+                <button class="controls__item-btn numpad__btn" @click="emitter.emit('input-corners', n)">
                     <span class="numpad__btn--corner" :class="`numpad__btn--corner-${n}`">{{ n }}</span>
                 </button>
             </li>
         </ul>
         <ul class="numpad numpad__centers" :class="globalStore.activeNumpad === 'centers' ? 'numpad--active' : ''">
             <li class="numpad__item" v-for="n in 9" :key="`numpad-center-${n}`">
-                <button class="controls__item-btn numpad__btn" @click="inputValue($event)">
+                <button class="controls__item-btn numpad__btn" @click="emitter.emit('input-centers', n)">
                     <span class="numpad__btn--center-mark">{{ n }}</span>
                 </button>
             </li>
         </ul>
         <ul class="numpad numpad__colors" :class="globalStore.activeNumpad === 'colors' ? 'numpad--active' : ''">
-            <li class="numpad__item" v-for="(value, key) in colors" :key="`numpad-color-${key}-${value}`">
-                <button class="controls__item-btn numpad__btn" @click="inputValue($event)">
-                    <label class="controls__item-btn-color-label">{{ key }}
-                        <input class="controls__item-btn-color-input" type="color" disabled :value="value">
+            <li class="numpad__item" v-for="(color, index) in COLORS" :key="`numpad-color-${index}`">
+                <button class="controls__item-btn numpad__btn" @click="emitter.emit('input-color', color)">
+                    <label class="controls__item-btn-color-label">{{ color }}
+                        <input class="controls__item-btn-color-input" type="color" disabled :value="color">
                     </label>
                 </button>
             </li>
@@ -88,25 +88,11 @@
 <script setup lang="ts">
 import { useGlobalStore } from "@/store/global";
 import { useInputStore } from "@/store/input";
+import { COLORS } from "@/store/constants";
+import emitter from "@/eventbus";
 
 const globalStore = useGlobalStore()
 const inputStore = useInputStore()
-
-const colors = {
-    'red': '#ff7777',
-    'dark-orange': '#ff782f',
-    'orange': '#f8961e',
-    'yellow': '#ffd043',
-    'green': '#7fc96b',
-    'dark-green': '#43aa8b',
-    'blue': '#55cdff',
-    'dark-blue': '#7088ff',
-    'white': '#ffffff'
-}
-
-function inputValue(event: MouseEvent): void {
-    inputStore.inputNumpadValue(event)
-}
 </script>
 
 <style scoped lang="scss">

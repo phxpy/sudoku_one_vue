@@ -1,5 +1,5 @@
 <template>
-    <li class="field__cell" :class="{'field__cell--hardwired': hardwired}" ref="cell">
+    <li class="field__cell" :class="{'field__cell--hardwired': hardwired}" ref="cell" :style="cellColorProp">
         <div class="field__cell-inner field__cell-number">{{ cellNumber }}</div>
         <div class="field__cell-inner field__cell-borders"></div>
         <div class="field__cell-inner field__cell-corners" v-html="cellCorners"></div>
@@ -24,6 +24,8 @@
     let cellNumber = ref(props.cellValue)
     let centersArr = ref<number[]>([])
     let cornersArr = ref<number[]>([])
+    let cellColors = ref<string[]>([])
+    let cellColorProp = ref<string>("")
 
     const cellCenters = computed(() => {
         return [...centersArr.value].sort().join("")
@@ -99,6 +101,43 @@
                 } else {
                     centersArr.value.push(key)
                 }
+            }
+        })
+
+        emitter.on("input-color", (color: string) => {
+            if (
+                cell.value!.classList.contains("field__cell--active") ||
+                cell.value!.classList.contains("field__cell--one-active")
+            ) {
+                if (cellColors.value.includes(color)) {
+                    cellColors.value.splice(cellColors.value.indexOf(color), 1)
+                } else {
+                    cellColors.value.push(color)
+                }
+
+                if (cellColors.value.length === 0) {
+                    cellColorProp.value = ""
+                } else if (cellColors.value.length === 1) {
+                    cellColorProp.value = `background-color: ${cellColors.value[0]};`
+                } else {
+                    const percent = parseInt((100 / cellColors.value.length).toFixed(0))
+                    let gradientString = ""
+                    const gap = 1
+
+                    cellColors.value.sort().forEach((colorItem, index) => {
+                        if (index === 0) {
+                            gradientString += `${colorItem} calc(${percent}% - ${gap}px)`
+                        } else if (index === cellColors.value.length - 1) {
+                            gradientString += `, ${colorItem} calc(${percent * index}% + ${gap}px)`
+                        } else {
+                            gradientString += `, ${colorItem} calc(${percent * index}% + ${gap}px), ${colorItem} calc(${percent * (index + 1)}% - ${gap}px)`
+                        }
+                    })
+
+                    cellColorProp.value = `background-image: linear-gradient(120deg, ${gradientString});`
+                }
+
+
             }
         })
     })
@@ -187,6 +226,11 @@
         pointer-events: none;
     }
 
+    // .field__cell-borders,
+    // .field__cell-number {
+    //     z-index: 3;
+    // }
+
     .field__cell:not(.field__cell--hardwired) .field__cell-inner {
         color: $input-cell-color;
     }
@@ -210,7 +254,7 @@
         z-index: 3;
         width: 100%;
         height: 100%;
-        background-color: rgba(255, 255, 255, 0.4);
+        background-color: rgba(255, 255, 255, 0.3);
     }
 
     .field__cell--one-active .field__cell-borders,
