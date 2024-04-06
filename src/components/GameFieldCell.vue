@@ -68,8 +68,11 @@
     onMounted(() => {
         emitter.on("input-number", (key: number) => {
             if (
-                cell.value!.classList.contains("field__cell--active") ||
-                cell.value!.classList.contains("field__cell--one-active")
+                !cell.value!.classList.contains("field__cell--hardwired") &&
+                (
+                    cell.value!.classList.contains("field__cell--active") ||
+                    cell.value!.classList.contains("field__cell--one-active")
+                )
             ) {
                 clearCell("number")
                 cellNumber.value = key
@@ -78,8 +81,11 @@
 
         emitter.on("input-corners", (key: number) => {
             if (
-                cell.value!.classList.contains("field__cell--active") ||
-                cell.value!.classList.contains("field__cell--one-active")
+                !cell.value!.classList.contains("field__cell--hardwired") &&
+                (
+                    cell.value!.classList.contains("field__cell--active") ||
+                    cell.value!.classList.contains("field__cell--one-active")
+                )
             ) {
                 clearCell("corners")
                 if (cornersArr.value.includes(key)) {
@@ -92,8 +98,11 @@
 
         emitter.on("input-centers", (key: number) => {
             if (
-                cell.value!.classList.contains("field__cell--active") ||
-                cell.value!.classList.contains("field__cell--one-active")
+                !cell.value!.classList.contains("field__cell--hardwired") &&
+                (
+                    cell.value!.classList.contains("field__cell--active") ||
+                    cell.value!.classList.contains("field__cell--one-active")
+                )
             ) {
                 clearCell("centers")
                 if (centersArr.value.includes(key)) {
