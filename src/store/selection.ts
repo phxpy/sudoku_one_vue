@@ -1,21 +1,15 @@
 import { defineStore } from 'pinia'
 
-export interface FieldCell extends HTMLElement {
-    cornerMarks: number[]
-    centerMarks: number[]
-    bgColors: string[]
-}
-
 export const useSelectionStore = defineStore("selection", {
     state: () => {
         return {
-            selectedCells: [] as FieldCell[],
+            selectedCells: [] as HTMLLIElement[],
             isDeselectionMode: false as boolean,
-            allCells: [] as FieldCell[]
+            allCells: [] as HTMLLIElement[]
         }
     },
     actions: {
-        addCell(cell: FieldCell) {
+        addCell(cell: HTMLLIElement) {
             this.selectedCells.push(cell)
         },
         removeCell() {
@@ -34,7 +28,7 @@ export const useSelectionStore = defineStore("selection", {
         },
         selectCell(event: any): void {
             this.restoreToDefaults()
-            const cell = event.target.closest(".field__cell")
+            const cell: HTMLLIElement = event.target.closest(".field__cell")
 
             if (cell) {
                 if (!cell.classList.contains("field__cell--active") || this.selectedCells.length > 1) {
