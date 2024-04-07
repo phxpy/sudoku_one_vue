@@ -46,6 +46,12 @@
                 }
             }
 
+            if (event.altKey && !event.ctrlKey && !event.shiftKey) {
+                if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
+                    emitter.emit("mark-number", key)
+                }
+            }
+
             if ((event.key === "Delete" || event.key === "Backspace") && selectionStore.selectedCells.length) {
                 emitter.emit("delete-cell")
             }

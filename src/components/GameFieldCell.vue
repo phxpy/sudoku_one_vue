@@ -23,7 +23,7 @@
 
     let cellNumber = ref(props.cellValue)
     let centersArr = ref<number[]>([])
-    let cornersArr = ref<number[]>([])
+    let cornersArr = ref<string[]>([])
     let cellColors = ref<string[]>([])
 
     const cellCenters = computed(() => {
@@ -36,11 +36,13 @@
         if (cornersArr.value.length) {
 
             [...cornersArr.value].sort().forEach(item => {
+                const markedClass = item[item.length - 1] ==="m" ? "field__cell-corner-mark--rounded" : ""
+
                 htmlString += `
                     <span
-                        class="field__cell-corner-mark field__cell-corner-mark--${item}"
+                        class="field__cell-corner-mark field__cell-corner-mark--${item[0]} ${markedClass}"
                     >
-                        ${item}
+                        ${item[0]}
                     </span>
                 `
             });
@@ -116,10 +118,12 @@
                 )
             ) {
                 clearCell("corners")
-                if (cornersArr.value.includes(key)) {
-                    cornersArr.value.splice(cornersArr.value.indexOf(key), 1)
+                if (cornersArr.value.includes(`${key}`)) {
+                    cornersArr.value.splice(cornersArr.value.indexOf(`${key}`), 1)
+                } else if (cornersArr.value.includes(`${key}m`)) {
+                    cornersArr.value.splice(cornersArr.value.indexOf(`${key}m`), 1)
                 } else {
-                    cornersArr.value.push(key)
+                    cornersArr.value.push(`${key}`)
                 }
             }
         })
@@ -174,13 +178,29 @@
             }
         })
 
-        emitter.on('refresh', () => {
+        emitter.on("refresh", () => {
             if (
                 !cell.value!.classList.contains("field__cell--hardwired")
             ) {
                 clearCell(null)
             } else {
                 cellColors.value = []
+            }
+        })
+
+        emitter.on("mark-number", (key: number) => {
+            if (
+                !cell.value!.classList.contains("field__cell--hardwired") &&
+                (
+                    cell.value!.classList.contains("field__cell--active") ||
+                    cell.value!.classList.contains("field__cell--one-active")
+                )
+            ) {
+                if (cornersArr.value.includes(`${key}`)) {
+                    cornersArr.value.splice(cornersArr.value.indexOf(`${key}`), 1, `${key}m`)
+                } else if (cornersArr.value.includes(`${key}m`)) {
+                    cornersArr.value.splice(cornersArr.value.indexOf(`${key}m`), 1, `${key}`)
+                }
             }
         })
     })
@@ -370,6 +390,18 @@
     .numpad__btn--corner-9 {
         bottom: 8px;
         right: 8px;
+    }
+
+    .field__cell-corner-mark--rounded::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 22px;
+        aspect-ratio: 1 / 1;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        border: 1px solid $input-cell-color;
     }
 
     .field__cell-centers,
