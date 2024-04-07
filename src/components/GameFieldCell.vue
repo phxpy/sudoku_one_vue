@@ -198,8 +198,13 @@
         font-weight: 500;
         color: #000;
         line-height: 1;
+        text-shadow: 0 0 3px #fff;
         user-select: none;
         background-color: #fff;
+    }
+
+    .field__cell-centers {
+        overflow: hidden;
     }
 
     .field__cell:not(.field__cell--hardwired) {
@@ -268,11 +273,6 @@
         align-items: center;
         pointer-events: none;
     }
-
-    // .field__cell-borders,
-    // .field__cell-number {
-    //     z-index: 3;
-    // }
 
     .field__cell:not(.field__cell--hardwired) .field__cell-inner {
         color: $input-cell-color;
