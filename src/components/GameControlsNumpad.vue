@@ -86,11 +86,11 @@
 </template>
 
 <script setup lang="ts">
-import { useGlobalStore } from "@/store/global";
-import { COLORS } from "@/store/constants";
-import emitter from "@/eventbus";
+    import { useGlobalStore } from "@/store/global";
+    import { COLORS } from "@/store/constants";
+    import emitter from "@/eventbus";
 
-const globalStore = useGlobalStore()
+    const globalStore = useGlobalStore()
 </script>
 
 <style scoped lang="scss">
