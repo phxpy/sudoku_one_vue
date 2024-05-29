@@ -1,10 +1,11 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia"
 
 export const useGlobalStore = defineStore("global", {
     state(){
         return {
             sudokuSet: "530600098070195000000000060800400700060803020003001006060000000000419080280005079",
-            isSolutionCorrect: true,
+            sudokuSize: 9,
+            isSolutionCorrect: false,
             activeNumpad: "numbers"
         }
     },
@@ -20,47 +21,45 @@ export const useGlobalStore = defineStore("global", {
             }
             return result
         },
-        checkBoxes() {
-            const boxes = this.chunkString(this.sudokuSet, 9)
-            const boxSet = new Set()
+        checkBoxes():void {
+            const boxes:string[] = this.chunkString(this.sudokuSet, this.sudokuSize)
 
             for (let i = 0; i < boxes!.length; i++) {
-                const box = boxes![i]
-                for (let j = 0; j < box.length; j++) {
-                    if (+box[j] >= 1 && +box[j] <= 9) {
-                        boxSet.add(box[j])
-                        continue
-                    } else {
-                        this.isSolutionCorrect = false
-                        break
-                    }
-                }
-                if (boxSet.size !== 9) {
+                const boxSet = new Set(boxes[i])
+                if (boxSet.size !== boxes[i].length) {
                     this.isSolutionCorrect = false
-                    break
+                    console.log("incorrect");
+                    return
                 }
             }
+
+            this.isSolutionCorrect = true
+            console.log("correct");
         },
-        checkRows() {
-            const boxes = this.chunkString(this.sudokuSet, 9)
-            const rows = []
+        checkRows():void {
+            const boxes:string[] = this.chunkString(this.sudokuSet, this.sudokuSize)
+            const rows:string[] = []
 
-            for (const rowNum of [1, 4, 7]) {
-                const rowTop = boxes![+rowNum - 1].slice(0, 3) + boxes![+rowNum].slice(0, 3) + boxes![+rowNum + 1].slice(0, 3)
-                const rowMiddle = boxes![+rowNum - 1].slice(3, 6) + boxes![+rowNum].slice(3, 6) + boxes![+rowNum + 1].slice(3, 6)
-                const rowBottom = boxes![+rowNum - 1].slice(6) + boxes![+rowNum].slice(6) + boxes![+rowNum + 1].slice(6)
-                rows.push(rowTop, rowMiddle, rowBottom)
-
-                for (let i = 0; i < rows.length; i++) {
-                    if (rows[i].includes("0") || rows[i].length !== new Set(rows[i]).size) {
-                        this.isSolutionCorrect = false
-                    }
+            for (let i = 0; i < boxes!.length; i+=3) {
+                for (let j = 0; j < 3; j++) {
+                    rows.push(boxes[i].slice(3*j, 3*j+3) + boxes[i+1].slice(3*j, 3*j+3) + boxes[i+2].slice(3*j, 3*j+3))
                 }
             }
 
+            for (let i = 0; i < rows.length; i++) {
+                const rowSet = new Set(rows[i])
+                if (rowSet.size !== rows[i].length) {
+                    this.isSolutionCorrect = false
+                    console.log("incorrect");
+                    return
+                }
+            }
+
+            this.isSolutionCorrect = true
+            console.log("correct");
         },
         checkSolution(): void {
-
+            this.checkRows()
         }
     }
 })

@@ -397,10 +397,10 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        width: 22px;
+        width: 20px;
         aspect-ratio: 1 / 1;
         transform: translate(-50%, -50%);
-        border-radius: 50%;
+        // border-radius: 50%;
         border: 1px solid $input-cell-color;
     }
 

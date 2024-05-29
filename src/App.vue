@@ -62,7 +62,5 @@
                 globalStore.setActiveNumpad("numbers")
             }
         })
-
-        globalStore.checkRows()
     })
 </script>

@@ -80,8 +80,7 @@
             </li>
         </ul>
         <button class="controls__item-btn numpad__btn numpad__btn--wide" id="deleteBtn" @click="emitter.emit('delete-cell')">delete</button>
-        <button class="controls__item-btn numpad__btn numpad__btn--wide numpad__btn--success" id="checkSolution">check
-        </button>
+        <button class="controls__item-btn numpad__btn numpad__btn--wide numpad__btn--success" id="checkSolution" @click="emitter.emit('check-solution')">check</button>
     </div>
 </template>
 
@@ -91,6 +90,10 @@
     import emitter from "@/eventbus";
 
     const globalStore = useGlobalStore()
+
+    emitter.on("check-solution", () => {
+        globalStore.checkSolution()
+    })
 </script>
 
 <style scoped lang="scss">
