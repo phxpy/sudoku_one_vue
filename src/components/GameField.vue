@@ -2,7 +2,7 @@
     <div class="field" @mousedown="selectionStore.selectCell">
         <ul class="field__box" v-for="n in 9" :key="`box-${n}`">
             <GameFieldCell
-                v-for="(cellNumber, index) in globalStore.sudokuSet.slice((n-1)*9, (n-1)*9+9)" :key="`${index}-${n}`"
+                v-for="(cellNumber, index) in globalStore.sudokuInitialSet.slice((n-1)*9, (n-1)*9+9)" :key="`${index}-${n}`"
                 :hardwired="+cellNumber > 0"
                 :cellIndex="index + (n-1)*9 + 1"
                 :cellValue="+cellNumber > 0 ? cellNumber : ''"

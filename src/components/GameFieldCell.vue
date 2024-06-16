@@ -1,5 +1,5 @@
 <template>
-    <li class="field__cell" :class="{'field__cell--hardwired': hardwired}" ref="cell" :style="cellColorProp">
+    <li class="field__cell" :class="{'field__cell--hardwired': hardwired}" ref="cell" :style="cellColorProp" :data-pos="cellIndex">
         <div class="field__cell-inner field__cell-number">{{ cellNumber }}</div>
         <div class="field__cell-inner field__cell-borders"></div>
         <div class="field__cell-inner field__cell-corners" v-html="cellCorners"></div>
@@ -12,13 +12,15 @@
 <script setup lang="ts">
     import { onMounted, ref, computed } from 'vue';
     import emitter from '@/eventbus';
+    import { useGlobalStore } from '@/store/global';
 
     const props = defineProps<{
-        hardwired: Boolean,
-        cellIndex: Number,
-        cellValue: String | Number
+        hardwired: boolean,
+        cellIndex: number,
+        cellValue: string | number
     }>()
 
+    const globalStore = useGlobalStore()
     const cell = ref<HTMLLIElement | null>(null)
 
     let cellNumber = ref(props.cellValue)
@@ -106,6 +108,8 @@
             ) {
                 clearCell("number")
                 cellNumber.value = key
+                globalStore.setSolutionNumber(key, props.cellIndex)
+                console.log(globalStore.sudokuUserSolution)
             }
         })
 
@@ -167,6 +171,7 @@
                 )
             ) {
                 clearCell(null)
+                globalStore.deleteSolutionNumber(props.cellIndex)
             } else if (
                 cell.value!.classList.contains("field__cell--hardwired") &&
                 (
