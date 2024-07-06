@@ -12,9 +12,9 @@ export const useSelectionStore = defineStore("selection", {
         addCell(cell: HTMLLIElement) {
             this.selectedCells.push(cell)
         },
-        removeCell() {
+        removeCell(cls:string) {
             this.selectedCells = this.selectedCells.filter(cell => {
-                return cell.classList.contains("field__cell--active")
+                return cell.classList.contains(cls)
             })
         },
         restoreToDefaults(): void {
@@ -27,16 +27,19 @@ export const useSelectionStore = defineStore("selection", {
             this.selectedCells = []
         },
         selectCell(event: any): void {
-            this.restoreToDefaults()
             const cell: HTMLLIElement = event.target.closest(".field__cell")
 
             if (cell) {
-                if (!cell.classList.contains("field__cell--active") || this.selectedCells.length > 1) {
+                if (!cell.classList.contains("field__cell--active") && !cell.classList.contains("field__cell--one-active") || this.selectedCells.length > 1) {
+                    this.restoreToDefaults()
                     cell.classList.add("field__cell--one-active")
                     this.addCell(cell)
+                } else if (cell.classList.contains("field__cell--one-active")) {
+                    cell.classList.remove("field__cell--one-active")
+                    this.removeCell("field__cell--one-active")
                 } else if (cell.classList.contains("field__cell--active")) {
                     cell.classList.remove("field__cell--active")
-                    this.removeCell()
+                    this.removeCell("field__cell--active")
                 }
             }
 
@@ -72,7 +75,7 @@ export const useSelectionStore = defineStore("selection", {
             )
                 {
                     cell.classList.remove("field__cell--active")
-                    this.removeCell()
+                    this.removeCell("field__cell--active")
             }
         }
     }

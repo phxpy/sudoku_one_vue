@@ -322,7 +322,7 @@
         z-index: 3;
         width: 100%;
         height: 100%;
-        background-color: rgba(255, 255, 255, 0.3);
+        background-color: rgba(255, 255, 255, 0.5);
     }
 
     .field__cell--one-active .field__cell-borders,
