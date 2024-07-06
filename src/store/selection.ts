@@ -29,10 +29,21 @@ export const useSelectionStore = defineStore("selection", {
         selectCell(event: any): void {
             const cell: HTMLLIElement = event.target.closest(".field__cell")
 
-            if (cell) {
+            if (cell && !event.ctrlKey && !event.shiftKey) {
                 if (!cell.classList.contains("field__cell--active") && !cell.classList.contains("field__cell--one-active") || this.selectedCells.length > 1) {
                     this.restoreToDefaults()
                     cell.classList.add("field__cell--one-active")
+                    this.addCell(cell)
+                } else if (cell.classList.contains("field__cell--one-active")) {
+                    cell.classList.remove("field__cell--one-active")
+                    this.removeCell("field__cell--one-active")
+                } else if (cell.classList.contains("field__cell--active")) {
+                    cell.classList.remove("field__cell--active")
+                    this.removeCell("field__cell--active")
+                }
+            } else if (cell && (event.ctrlKey || event.shiftKey)) {
+                if (!cell.classList.contains("field__cell--active") && !cell.classList.contains("field__cell--one-active") || this.selectedCells.length > 1) {
+                    cell.classList.add("field__cell--active")
                     this.addCell(cell)
                 } else if (cell.classList.contains("field__cell--one-active")) {
                     cell.classList.remove("field__cell--one-active")
