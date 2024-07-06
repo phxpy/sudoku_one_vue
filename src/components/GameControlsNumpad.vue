@@ -1,6 +1,6 @@
 <template>
     <div class="controls">
-        <div class="timer">00:00:00</div>
+        <GameTimer/>
         <ul class="numpad numpad__numbers" :class="globalStore.activeNumpad === 'numbers' ? 'numpad--active' : ''">
             <li class="numpad__item" v-for="n in 9" :key="`numpad-number-${n}`">
                 <button class="controls__item-btn numpad__btn" @click="emitter.emit('input-number', n)">{{ n }}</button>
@@ -85,6 +85,7 @@
 </template>
 
 <script setup lang="ts">
+    import GameTimer from "./GameTimer.vue";
     import { useGlobalStore } from "@/store/global";
     import { COLORS } from "@/store/constants";
     import emitter from "@/eventbus";
