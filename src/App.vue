@@ -1,17 +1,28 @@
 <template>
-    <router-view></router-view>
+    <GameView v-if="globalStore.sudokuInitialSet"/>
+    <p class="error" v-else-if="error" v-html="error"></p>
 </template>
 
 <script setup lang="ts">
+    import GameView from "@/views/GameView.vue"
     import { useGlobalStore } from "@/store/global";
     import { useSelectionStore } from '@/store/selection';
-    import { onMounted } from 'vue';
+    import { onMounted, ref } from 'vue';
     import emitter from '@/eventbus';
 
     const selectionStore = useSelectionStore()
     const globalStore = useGlobalStore()
+    const error = ref("")
 
     onMounted(() => {
+        try {
+            const puzzleB64 = new URL(location).searchParams.get("puzzle")
+            const puzzleData = atob(puzzleB64)
+            globalStore.setInitialSet(JSON.parse(puzzleData).initialState)
+        } catch (e) {
+            error.value = "Incorrect puzzle link.<br>Try another one"
+        }
+
         window.addEventListener("keydown", event =>  {
             const key = event.code.split("")[event.code.length - 1]
             event.preventDefault()
