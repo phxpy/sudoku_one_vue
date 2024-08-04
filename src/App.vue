@@ -1,5 +1,5 @@
 <template>
-    <GameView v-if="globalStore.sudokuInitialSet"/>
+    <GameView v-if="globalStore.puzzle.initialState"/>
     <p class="error" v-else-if="error" v-html="error"></p>
 </template>
 
@@ -19,7 +19,7 @@
         try {
             const puzzleB64: string = new URL(location.href).searchParams.get("puzzle") || ""
             const puzzleData = atob(puzzleB64)
-            globalStore.setInitialSet(JSON.parse(puzzleData).initialState)
+            globalStore.setPuzzleData(JSON.parse(puzzleData))
         } catch (e) {
             error.value = "Incorrect puzzle link.<br>Try another one"
         }
