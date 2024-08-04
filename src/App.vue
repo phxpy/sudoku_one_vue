@@ -9,6 +9,7 @@
     import { useSelectionStore } from '@/store/selection';
     import { onMounted, ref } from 'vue';
     import emitter from '@/eventbus';
+    import { COLORS } from "./store/constants";
 
     const selectionStore = useSelectionStore()
     const globalStore = useGlobalStore()
@@ -16,7 +17,7 @@
 
     onMounted(() => {
         try {
-            const puzzleB64 = new URL(location).searchParams.get("puzzle")
+            const puzzleB64: string = new URL(location.href).searchParams.get("puzzle") || ""
             const puzzleData = atob(puzzleB64)
             globalStore.setInitialSet(JSON.parse(puzzleData).initialState)
         } catch (e) {
@@ -29,7 +30,15 @@
 
             if (!event.shiftKey && !event.ctrlKey && !event.altKey) {
                 if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
-                    emitter.emit("input-number", key)
+                    if (globalStore.activeNumpad === "numbers") {
+                        emitter.emit("input-number", key)
+                    } else if (globalStore.activeNumpad === "corners") {
+                        emitter.emit("input-corners", key)
+                    } else if (globalStore.activeNumpad === "centers") {
+                        emitter.emit("input-centers", key)
+                    } else if (globalStore.activeNumpad === "colors") {
+                        emitter.emit("input-color", COLORS[+key - 1])
+                    }
                 }
             }
 
@@ -53,7 +62,7 @@
                 globalStore.setActiveNumpad("colors")
 
                 if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
-                    emitter.emit("input-colors", key)
+                    emitter.emit("input-color", COLORS[+key - 1])
                 }
             }
 
