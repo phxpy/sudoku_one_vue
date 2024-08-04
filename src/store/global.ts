@@ -10,6 +10,7 @@ export const useGlobalStore = defineStore("global", {
             sudokuRows: [],
             isSolutionCorrect: false,
             activeNumpad: "numbers",
+            tempNumpad: "numbers",
             timerId: 0
         }
     },
@@ -19,6 +20,13 @@ export const useGlobalStore = defineStore("global", {
         },
         setTimerId(id: number): void {
             this.timerId = id
+        },
+        setTempNumpad(numpadName?: string): void {
+            if (numpadName) {
+                this.tempNumpad = numpadName
+            } else {
+                this.tempNumpad = this.activeNumpad
+            }
         },
         setActiveNumpad(numpadName: string): void {
             this.activeNumpad = numpadName

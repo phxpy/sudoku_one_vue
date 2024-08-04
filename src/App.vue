@@ -30,20 +30,20 @@
 
             if (!event.shiftKey && !event.ctrlKey && !event.altKey) {
                 if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
-                    if (globalStore.activeNumpad === "numbers") {
+                    if (globalStore.tempNumpad === "numbers") {
                         emitter.emit("input-number", key)
-                    } else if (globalStore.activeNumpad === "corners") {
+                    } else if (globalStore.tempNumpad === "corners") {
                         emitter.emit("input-corners", key)
-                    } else if (globalStore.activeNumpad === "centers") {
+                    } else if (globalStore.tempNumpad === "centers") {
                         emitter.emit("input-centers", key)
-                    } else if (globalStore.activeNumpad === "colors") {
+                    } else if (globalStore.tempNumpad === "colors") {
                         emitter.emit("input-color", COLORS[+key - 1])
                     }
                 }
             }
 
             if (event.shiftKey && !event.ctrlKey && !event.altKey) {
-                globalStore.setActiveNumpad("corners")
+                globalStore.setTempNumpad("corners")
 
                 if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
                     emitter.emit("input-corners", key)
@@ -51,7 +51,7 @@
             }
 
             if (event.ctrlKey && !event.shiftKey && !event.altKey) {
-                globalStore.setActiveNumpad("centers")
+                globalStore.setTempNumpad("centers")
 
                 if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
                     emitter.emit("input-centers", key)
@@ -59,7 +59,7 @@
             }
 
             if (event.ctrlKey && event.shiftKey && !event.altKey) {
-                globalStore.setActiveNumpad("colors")
+                globalStore.setTempNumpad("colors")
 
                 if (+key > 0 && +key <= 9 && selectionStore.selectedCells.length) {
                     emitter.emit("input-color", COLORS[+key - 1])
@@ -79,7 +79,7 @@
 
         window.addEventListener("keyup", (e) => {
             if (e.key === "Control" || e.key === "Shift" || e.key === "Alt") {
-                globalStore.setActiveNumpad("numbers")
+                globalStore.setTempNumpad()
             }
         })
     })
