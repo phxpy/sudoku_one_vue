@@ -75,6 +75,10 @@
             if ((event.key === "Delete" || event.key === "Backspace") && selectionStore.selectedCells.length) {
                 emitter.emit("delete-cell")
             }
+
+            if (event.code === "Space") {
+                emitter.emit("toggle-numpad")
+            }
         })
 
         window.addEventListener("keyup", (e) => {

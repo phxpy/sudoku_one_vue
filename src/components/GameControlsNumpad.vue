@@ -89,16 +89,42 @@
     import { useGlobalStore } from "@/store/global";
     import { COLORS } from "@/store/constants";
     import emitter from "@/eventbus";
+    import { onMounted } from 'vue';
 
     const globalStore = useGlobalStore()
+
+    const setActiveNumpad = (e: any) => {
+        globalStore.setActiveNumpad(e.target.value)
+    }
+
+    let numpadCheckboxes: HTMLInputElement[];
+
+    onMounted(() => {
+        numpadCheckboxes = Array.from(document.querySelectorAll(".controls__item-radio"))
+    })
 
     emitter.on("check-solution", () => {
         globalStore.checkSolution()
     })
 
-    const setActiveNumpad = (e: any) => {
-        globalStore.setActiveNumpad(e.target.value)
-    }
+    emitter.on("toggle-numpad", () => {
+        console.log(numpadCheckboxes);
+
+        for (let index = 0; index < numpadCheckboxes.length; index++) {
+            if (numpadCheckboxes[index].checked) {
+                numpadCheckboxes[index].checked = false
+                if (index + 1 < numpadCheckboxes.length) {
+                    numpadCheckboxes[index + 1].checked = true
+                    globalStore.setTempNumpad(numpadCheckboxes[index + 1].value)
+                } else {
+                    numpadCheckboxes[0].checked = true
+                    globalStore.setTempNumpad(numpadCheckboxes[0].value)
+                }
+                break
+            }
+        }
+    })
+
 </script>
 
 <style scoped lang="scss">
