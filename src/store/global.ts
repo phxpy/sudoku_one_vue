@@ -2,7 +2,7 @@ import { defineStore } from "pinia"
 
 interface puzzleData {
     "name": string
-    "description": string
+    "rules": string
     "initialState": string
 }
 

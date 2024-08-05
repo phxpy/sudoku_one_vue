@@ -23,8 +23,10 @@
 
 <style lang="scss">
     .field {
+        grid-column: 1;
+        grid-row: 1 / -1;
         align-self: center;
-        justify-self: center;
+        justify-self: end;
         display: inline-grid;
         grid-template-columns: repeat(3, auto);
         gap: 3px;
