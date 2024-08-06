@@ -1,4 +1,5 @@
 import { defineStore } from "pinia"
+import emitter from '@/eventbus';
 
 interface puzzleData {
     "name": string
@@ -17,7 +18,7 @@ export const useGlobalStore = defineStore("global", {
             isSolutionCorrect: false,
             activeNumpad: "numbers",
             tempNumpad: "numbers",
-            timerId: 0
+            timerId: 0,
         }
     },
     actions: {
@@ -59,13 +60,10 @@ export const useGlobalStore = defineStore("global", {
                 const boxSet = new Set(boxes[i].split("").filter(num => num !== "0"))
                 if (boxSet.size !== boxes[i].length) {
                     this.isSolutionCorrect = false
-                    console.log("incorrect");
+                    emitter.emit("raise-popup")
                     return
                 }
             }
-
-            this.isSolutionCorrect = true
-            console.log("correct");
         },
         checkRowsAndColumns():void {
             const solutionString = this.sudokuUserSolution.join("")
@@ -82,7 +80,7 @@ export const useGlobalStore = defineStore("global", {
                 const rowSet = new Set(rows[i])
                 if (rowSet.size !== rows[i].length || rows[i].includes("0")) {
                     this.isSolutionCorrect = false
-                    console.log("incorrect");
+                    emitter.emit("raise-popup")
                     return
                 }
             }
@@ -100,18 +98,19 @@ export const useGlobalStore = defineStore("global", {
                 const columnSet = new Set(columns[i])
                 if (columnSet.size !== columns[i].length || columns[i].includes("0")) {
                     this.isSolutionCorrect = false
-                    console.log("incorrect");
+                    emitter.emit("raise-popup")
                     return
                 }
             }
 
             this.isSolutionCorrect = true
-            console.log("correct");
+            emitter.emit("raise-popup")
             clearInterval(this.timerId)
         },
         checkSolution(): void {
             if (this.sudokuUserSolution.join("").includes("0")) {
-                console.log("incorrect");
+                this.isSolutionCorrect = false
+                emitter.emit("raise-popup")
             } else {
                 this.checkBoxes()
                 this.checkRowsAndColumns()

@@ -109,7 +109,6 @@
                 clearCell("number")
                 cellNumber.value = key
                 globalStore.setSolutionNumber(key, props.cellIndex)
-                console.log(globalStore.sudokuUserSolution)
             }
         })
 
