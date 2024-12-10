@@ -21,7 +21,7 @@
             const puzzleData = atob(puzzleB64)
             globalStore.setPuzzleData(JSON.parse(puzzleData))
         } catch (e) {
-            error.value = "Incorrect puzzle link.<br>Try another one"
+            error.value = "Incorrect&nbsp;puzzle&nbsp;link.<br>Try&nbsp;another&nbsp;one"
         }
 
         window.addEventListener("keydown", event =>  {
