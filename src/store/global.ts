@@ -3,6 +3,7 @@ import emitter from '@/eventbus';
 
 interface puzzleData {
     "name": string
+    "author": string
     "rules": string
     "initialState": string
 }

@@ -1,6 +1,6 @@
 <template>
     <div class="rules">
-        <h1 class="rules__title">{{ globalStore.puzzle.name }}<br>by author</h1>
+        <h1 class="rules__title">{{ globalStore.puzzle.name }}<br>by {{ globalStore.puzzle.author ? globalStore.puzzle.author : "author" }}</h1>
         <p class="rules__text">{{ globalStore.puzzle.rules }}</p>
     </div>
 </template>
