@@ -2,5 +2,7 @@
     "name": "Sample Sudoku #2",
     "author": "sudokulab.net",
     "rules": "Normal Sudoku rules apply. Place the digits 1 through 9 in each empty cell. Digits must not repeat within the same row, column, or box. A black dot between cells indicates cell values with a 2:1 ratio. A white dot between cells indicates cells with consecutive values. Not all dots are shown.",
-    "initialState": "000010000000020000000030000000040000000050000000060000000070000000080000000090000"
+    "initialState": "000010000000020000000030000000040000000050000000060000000070000000080000000090000",
+    "ratio": ["22-r", "29-b", "37-b", "38-r", "44-r", "47-r", "48-b", "49-r", "55-b", "57-b", "60-b", "66-b", "69-b"],
+    "difference": ["5-b", "10-r", "11-b", "14-b", "58-r", "62-r", "74-r"]
 }

@@ -16,9 +16,27 @@
     import GameFieldCell from "./GameFieldCell.vue"
     import { useSelectionStore } from "@/store/selection"
     import { useGlobalStore } from "@/store/global";
+    import { onMounted } from "vue";
 
     const selectionStore = useSelectionStore()
     const globalStore = useGlobalStore()
+
+    onMounted(() => {
+        setRatioKropki()
+        setDifferenceKropki()
+    })
+
+    const setRatioKropki = () => {
+        globalStore.puzzle.ratio && globalStore.puzzle.ratio.forEach(item => {
+            document.querySelector(`[data-pos="${item.split("-")[0]}"]`)!.classList.add(`field__cell--ratio-${item.split("-")[1]}`)
+        })
+    }
+
+    const setDifferenceKropki = () => {
+        globalStore.puzzle.difference && globalStore.puzzle.difference.forEach(item => {
+            document.querySelector(`[data-pos="${item.split("-")[0]}"]`)!.classList.add(`field__cell--diff-${item.split("-")[1]}`)
+        })
+    }
 </script>
 
 <style lang="scss">

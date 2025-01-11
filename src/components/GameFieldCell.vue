@@ -413,4 +413,41 @@
         font-size: 20px;
         line-height: 1;
     }
+
+    .field__cell--ratio-r::before,
+    .field__cell--ratio-b::after,
+    .field__cell--diff-r::before,
+    .field__cell--diff-b::after {
+        content: "";
+        position: absolute;
+        z-index: 10;
+        width: calc($cell-size / 4);
+        height: calc($cell-size / 4);
+        border-radius: 50%;
+        border: 1px solid #000;
+    }
+
+    .field__cell--ratio-r::before,
+    .field__cell--ratio-b::after {
+        background-color: #000;
+    }
+
+    .field__cell--diff-r::before,
+    .field__cell--diff-b::after {
+        background-color: #fff;
+    }
+
+    .field__cell--ratio-r::before,
+    .field__cell--diff-r::before {
+        top: 50%;
+        right: 0;
+        transform: translate(50%, -50%);
+    }
+
+    .field__cell--ratio-b::after,
+    .field__cell--diff-b::after {
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 50%);
+    }
 </style>

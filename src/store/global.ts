@@ -6,6 +6,8 @@ interface puzzleData {
     "author": string
     "rules": string
     "initialState": string
+    "ratio"?: string[]
+    "difference"?: string[]
 }
 
 export const useGlobalStore = defineStore("global", {
@@ -40,7 +42,7 @@ export const useGlobalStore = defineStore("global", {
             this.activeNumpad = numpadName
         },
         setSolutionNumber(num: number, pos: number): void {
-            this.sudokuUserSolution[pos - 1] = num
+            this.sudokuUserSolution[pos - 1] = +num
         },
         deleteSolutionNumber(pos: number): void {
             this.sudokuUserSolution[pos - 1] = 0
