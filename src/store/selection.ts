@@ -12,7 +12,7 @@ export const useSelectionStore = defineStore("selection", {
         addCell(cell: HTMLLIElement) {
             this.selectedCells.push(cell)
         },
-        removeCell(cls:string) {
+        removeCell(cls: string) {
             this.selectedCells = this.selectedCells.filter(cell => {
                 return cell.classList.contains(cls)
             })
@@ -74,19 +74,17 @@ export const useSelectionStore = defineStore("selection", {
                 !this.isDeselectionMode &&
                 !cell.classList.contains("field__cell--active") &&
                 event.target.classList.contains("field__cell-hovercell")
-            )
-                {
-                    cell.classList.add("field__cell--active")
-                    this.addCell(cell)
+            ) {
+                cell.classList.add("field__cell--active")
+                this.addCell(cell)
             } else if (
                 cell &&
                 this.isDeselectionMode &&
                 cell.classList.contains("field__cell--active") &&
                 event.target.classList.contains("field__cell-hovercell")
-            )
-                {
-                    cell.classList.remove("field__cell--active")
-                    this.removeCell("field__cell--active")
+            ) {
+                cell.classList.remove("field__cell--active")
+                this.removeCell("field__cell--active")
             }
         }
     }
